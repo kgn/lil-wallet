@@ -2,6 +2,33 @@
   "object": {
     "pins": [
       {
+        "package": "GLTFSceneKit",
+        "repositoryURL": "https://github.com/kgn/GLTFSceneKit",
+        "state": {
+          "branch": "master",
+          "revision": "e74abdd20a19d1fe0ca502d7d23444b97a6406a6",
+          "version": null
+        }
+      },
+      {
+        "package": "Looping",
+        "repositoryURL": "https://github.com/kgn/Looping.git",
+        "state": {
+          "branch": "master",
+          "revision": "790f09c6708acaefb97b6f552e832458edaf05a6",
+          "version": null
+        }
+      },
+      {
+        "package": "NFTKit",
+        "repositoryURL": "https://github.com/kgn/NFTKit.git",
+        "state": {
+          "branch": "main",
+          "revision": "dbdf80c69b45d5d9cfa03d23551c81d379863aeb",
+          "version": null
+        }
+      },
+      {
         "package": "SocketIO",
         "repositoryURL": "https://github.com/socketio/socket.io-client-swift",
         "state": {

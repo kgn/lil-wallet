@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+import NFTKit
 
 struct ObjectGridItem: View {
-    @EnvironmentObject var object: OpenSeaAsset
     @EnvironmentObject var appearance: Appearance
     
+    let object: OpenSea.NFT
+    
     var body: some View {
-        NavigationLink(destination: ObjectDetailView().environmentObject(object), label: {
+        NavigationLink(destination: ObjectDetailView(object: object), label: {
             if object.isSVG() {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -41,8 +43,8 @@ struct ObjectGridItem: View {
     }
 }
 
-struct ObjectGridItem_Previews: PreviewProvider {
-    static var previews: some View {
-        ObjectGridItem()
-    }
-}
+//struct ObjectGridItem_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ObjectGridItem()
+//    }
+//}

@@ -7,32 +7,35 @@
 
 import SwiftUI
 import WebKit
+import NFTKit
 
 struct ObjectDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var object: OpenSeaAsset
     @EnvironmentObject var appearance: Appearance
+    let object: OpenSea.NFT
     
     var body: some View {
         let appFont = appearance.getAppFont()
         
         List {
-            Group {
-                if object.isSVG() {
-                    WebView(loadURL: object.image_url)
-                        .aspectRatio(1, contentMode: .fit)
-                } else {
-                    AsyncImage(url: URL(string: object.image_url)) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fit)
-                    } placeholder: {
-                        Rectangle()
-                            .foregroundColor(Color(UIColor.secondarySystemBackground))
-                            .aspectRatio(1, contentMode: .fit)
-                    }
-                }
-            }
+            NFTFullView(nft: object, playAudio: true, showWarning: true, size: CGSize(width: 400, height: 400))
+                .aspectRatio(1, contentMode: .fit)
+//            Group {
+//                if object.isSVG() {
+//                    WebView(loadURL: object.image_url)
+//                        .aspectRatio(1, contentMode: .fit)
+//                } else {
+//                    AsyncImage(url: URL(string: object.image_url)) { image in
+//                        image.resizable()
+//                            .aspectRatio(contentMode: .fit)
+//                    } placeholder: {
+//                        Rectangle()
+//                            .foregroundColor(Color(UIColor.secondarySystemBackground))
+//                            .aspectRatio(1, contentMode: .fit)
+//                    }
+//                }
+//            }
             .listRowInsets(EdgeInsets())
             .listRowSeparator(.hidden)
             
@@ -115,8 +118,8 @@ struct WebView: UIViewRepresentable {
     }
 }
 
-struct ObjectDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        ObjectDetailView()
-    }
-}
+//struct ObjectDetailView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ObjectDetailView()
+//    }
+//}

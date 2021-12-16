@@ -10,13 +10,14 @@ import CoreGraphics
 import SocketIO
 import Combine
 import SwiftUI
+import NFTKit
 
 class Wallet: ObservableObject {
     @AppStorage("currentWalletAddress") var currentWalletAddress: String = ""
     @Published var network = Network()
     @Published var value: NSNumber = 0
     @Published var tokens: [Token] = []
-    @Published var objects: [OpenSeaAsset] = []
+    @Published var objects: [OpenSea.NFT] = []
     @Published var transactions: [Transaction] = []
     
     // loading states
@@ -182,30 +183,13 @@ class Wallet: ObservableObject {
     
     func fetchObjects() {
         if self.currentWalletAddress != "" {
-            guard let url = URL(string: "https://api.opensea.io/api/v1/assets?limit=50&format=json&owner=\(self.currentWalletAddress)") else {
-                print("Invalid URL")
-                return
-            }
-                    
-            let request = URLRequest(url: url)
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let data = data {
-                    if let decodedResponse = try? JSONDecoder().decode(OpenSeaAssetsResponse.self, from: data) {
-                        // we have good data – go back to the main thread
-                        DispatchQueue.main.async {
-                            // update our UI
-                            self.objects = decodedResponse.assets
-                            self.loadingObjects = false
-                        }
-
-                        return
-                    }
+            OpenSea.nfts(from: self.currentWalletAddress) { nfts, response, error in
+                DispatchQueue.main.async {
+                    // update our UI
+                    self.objects = nfts ?? []
+                    self.loadingObjects = false
                 }
-
-                // if we're still here it means there was a problem
-                print("failed: \(error?.localizedDescription ?? "Unknown error")")
-            }.resume()
+            }
         } else {
             self.loadingObjects = false
         }
@@ -218,37 +202,9 @@ struct ReverseENSLookupResponse: Codable {
     var address: String
 }
 
-struct OpenSeaAssetsResponse: Codable {
-    var assets: [OpenSeaAsset]
-}
-
-class OpenSeaAsset: Codable, ObservableObject {
-    var id: Int
-    var image_url: String
-    var name: String?
-    var external_link: String?
-    var traits: [OpenSeaAssetTrait]
-    var description: String?
-    var permalink: String
-    
+extension OpenSea.NFT {
     func isSVG() -> Bool {
         return self.image_url.suffix(3) == "svg"
-    }
-}
-
-struct OpenSeaAssetTrait: Codable {
-    var trait_type: String
-    var value: String
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.trait_type = try container.decode(String.self, forKey: .trait_type)
-        do {
-            self.value = try container.decode(String.self, forKey: .value)
-        } catch DecodingError.typeMismatch {
-            let value = try container.decode(Int.self, forKey: .value)
-            self.value = "\(value)"
-        }
     }
 }
 
